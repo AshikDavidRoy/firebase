@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tutorial</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+
+
+<script>
+
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+// Follow this pattern to import other Firebase services
+// import { } from 'firebase/<service>';
+
+// TODO: Replace the following with your app's Firebase project configuration
+const firebaseConfig = {
+  //...
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Get a list of cities from your database
+async function getCities(db) {
+  const citiesCol = collection(db, 'cities');
+  const citySnapshot = await getDocs(citiesCol);
+  const cityList = citySnapshot.docs.map(doc => doc.data());
+  return cityList;
+}
+
+
+document.getElementById("submit-btn").onclick = async function (e) {
+        e.preventDefault()
+        const docRef = await addDoc(collection(db, "data"), {
+            Name: document.getElementById('Name').value,
+            Message: document.getElementById('Msg').value
+        });
+        console.log("Document written with ID: ", docRef.id);
+        alert("Form submitted")
+        location.reload()
+    };
+
+    window.onload = async function () {
+        const querySnapshot = await getDocs(collection(db, "data"));
+        querySnapshot.forEach((doc) => {
+            const row = document.getElementById("tbody").insertRow(0);
+            row.insertCell(0).innerHTML = doc.data().Name
+            row.insertCell(-1).innerHTML = doc.data().Message
+        });
+    };
+</script>
+
+<!-- <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+    import { getFirestore, addDoc, collection, getDocs } from 'https://www.gstatic.com/firebasejs/9.13.0/firebase-firestore.js';
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyAWaCTESoOXAggZxqtxN5Y6J5R0zVEN66I",
+        authDomain: "qwer-d64a4.firebaseapp.com",
+        projectId: "qwer-d64a4",
+        storageBucket: "qwer-d64a4.appspot.com",
+        messagingSenderId: "960413155052",
+        appId: "1:960413155052:web:5efbd7f06152c18b4a6fc9"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("submit-btn").onclick = async function (e) {
+        e.preventDefault()
+        const docRef = await addDoc(collection(db, "data"), {
+            Name: document.getElementById('Name').value,
+            Message: document.getElementById('Msg').value
+        });
+        console.log("Document written with ID: ", docRef.id);
+        alert("Form submitted")
+        location.reload()
+    };
+
+    window.onload = async function () {
+        const querySnapshot = await getDocs(collection(db, "data"));
+        querySnapshot.forEach((doc) => {
+            const row = document.getElementById("tbody").insertRow(0);
+            row.insertCell(0).innerHTML = doc.data().Name
+            row.insertCell(-1).innerHTML = doc.data().Message
+        });
+    };
+</script> -->
+
+<body>
+
+    <h1>GDSC - Firebase Basic Tutorial</h1>
+    <br><br>
+    <form autocomplete="off">
+        <div class="input">
+            <input type="text" class="form-control" placeholder="Name" aria-label="First name" id="Name" required>
+        </div>
+        <div class="input">
+            <input type="text" class="form-control" placeholder="Message" aria-label="Last name" id="Msg" required>
+        </div>
+        <button id="submit-btn">Submit</button>
+    </form>
+
+
+    <br>
+    <br>
+
+    <div id="table">
+        <h1>DataBase</h1>
+        <br><br>
+        <table id="my-table">
+            <thead>
+                <th>Name</th>
+                <th>Message</th>
+            </thead>
+            <tbody id="tbody">
+
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+
+
+
+</html>
